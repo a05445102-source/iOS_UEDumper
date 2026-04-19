@@ -1,0 +1,37 @@
+name: Build Tweak
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Setup Theos
+      run: |
+        export THEOS=/opt/theos
+        sudo git clone --recursive https://github.com/theos/theos.git $THEOS
+        sudo mkdir -p $THEOS/sdks
+        sudo ln -s /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk $THEOS/sdks/iPhoneOS.sdk
+        echo "THEOS=/opt/theos" >> $GITHUB_ENV
+
+    - name: Build package
+      run: |
+        cd Tweak
+        make clean package
+        mkdir -p ../output
+        cp *.deb ../output/
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: UEDumper-deb
+        path: output/
