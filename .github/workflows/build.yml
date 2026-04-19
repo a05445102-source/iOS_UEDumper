@@ -31,7 +31,8 @@ jobs:
         cd Tweak
         make clean package
         mkdir -p ../output
-        cp *.deb ../output/
+        # 从可能的子目录中查找 .deb 文件并复制到 output
+        find . -name "*.deb" -exec cp {} ../output/ \;
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
