@@ -3,7 +3,7 @@ name: Build Tweak
 on:
   push:
     branches: [ main ]
-  workflow_dispatch:  # 允许手动触发
+  workflow_dispatch:
 
 jobs:
   build:
@@ -22,6 +22,9 @@ jobs:
         sudo mkdir -p $THEOS/sdks
         sudo ln -s /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk $THEOS/sdks/iPhoneOS.sdk
         echo "THEOS=/opt/theos" >> $GITHUB_ENV
+
+    - name: Install ldid
+      run: brew install ldid
 
     - name: Build package
       run: |
